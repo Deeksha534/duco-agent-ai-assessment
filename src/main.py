@@ -16,6 +16,8 @@ from agents.mri_agent import (
     generate_diagnosis
 )
 from agents.report_agent import generate_financial_report
+from agents.cost_flow_agent import generate_cost_flow
+from agents.briefing_agent import generate_patient_briefing
 # Read user query
 user_query = read_text_file("data/user_query.txt")
 
@@ -55,6 +57,19 @@ aarav_cob = calculate_cob_claim(
 )
 print(aarav_cob)
 
+print("\nCOST FLOW SUMMARY\n")
+
+cost_flow = generate_cost_flow(aarav_cob)
+
+print(cost_flow)
+print("\nPATIENT BRIEFING\n")
+
+patient_briefing = generate_patient_briefing(
+    "Aarav Sen",
+    aarav_cob
+)
+
+print(patient_briefing)
 print("\nFINANCIAL REPORT\n")
 
 financial_report = generate_financial_report(
@@ -138,4 +153,26 @@ with open(
 
 print(
     "Priya report saved to outputs/priya_financial_summary.txt"
+)
+
+with open(
+    "outputs/cost_flow_report.txt",
+    "w",
+    encoding="utf-8"
+) as file:
+    file.write(cost_flow)
+
+print(
+    "Cost flow report saved to outputs/cost_flow_report.txt"
+)
+
+with open(
+    "outputs/patient_briefing.txt",
+    "w",
+    encoding="utf-8"
+) as file:
+    file.write(patient_briefing)
+
+print(
+    "Patient briefing saved to outputs/patient_briefing.txt"
 )
