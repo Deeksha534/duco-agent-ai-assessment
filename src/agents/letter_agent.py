@@ -1,49 +1,31 @@
-def generate_preauth_letter(
-    patient_name,
-    diagnosis,
-    procedure_1,
-    procedure_2,
-    total_cost,
-    primary_plan,
-    secondary_plan
-):
+def generate_preauth_letter(patient_name: str, diagnosis: str, procedures: list, total_cost: float, primary_plan: str, secondary_plan: str) -> str:
+    procedure_lines = ""
+    for proc in procedures:
+        procedure_lines += f"- CPT Code: {proc['cpt']} | Description: {proc['description']} | Cost: ₹ {proc['cost']:,.2f}\n"
 
-    letter = f"""
-PRE-AUTHORIZATION REQUEST
+    letter = f"""============================================================
+              PRIOR AUTHORIZATION COMPLIANCE REQUEST
+============================================================
+Date: June 17, 2026
+To: Medical Review Board & Prior Authorization Intake Dept.
+Primary Coverage Carrier  : {primary_plan}
+Secondary Coverage Carrier: {secondary_plan}
 
-Patient Name: {patient_name}
+PATIENT CLINICAL PROFILE:
+-------------------------
+Patient Name : {patient_name}
+Diagnosis    : {diagnosis}
+Total Cost   : ₹ {total_cost:,.2f}
 
-Diagnosis:
-{diagnosis}
+PROPOSED TREATMENT PLAN & CLINICAL CODES:
+-----------------------------------------
+{procedure_lines}
+JUSTIFICATION & COMPLIANCE STATEMENT:
+This request is submitted under dual Coordination of Benefits (COB) rules.
+All clinical findings conform to policy validation checks. Please review
+the attached structured intake data logs for expedited approval.
 
-Requested Procedures:
-
-1. CPT {procedure_1["cpt"]}
-   {procedure_1["description"]}
-
-2. CPT {procedure_2["cpt"]}
-   {procedure_2["description"]}
-
-Estimated Total Cost:
-₹{total_cost}
-
-Primary Insurance:
-{primary_plan}
-
-Secondary Insurance:
-{secondary_plan}
-
-This procedure has been recommended based on
-clinical findings and is considered medically
-necessary.
-
-Kindly review this request and provide
-pre-authorization approval.
-
-Thank you.
-
-Sincerely,
-DuCO-Agent
+Authorized Signature: DuCO-Agent Processing Engine
+============================================================
 """
-
     return letter
