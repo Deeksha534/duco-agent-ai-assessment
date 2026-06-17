@@ -1,0 +1,12 @@
+
+============================================================
+                FINANCIAL SUMMARY COMPLIANCE REPORT
+============================================================
+Patient Insured Name : Aarav Sen
+Gross Claim Liability: ₹ 450,000.00
+------------------------------------------------------------
+Primary Carrier Payment Allocation  : ₹ 400,500.00
+Secondary Carrier Payment Allocation: ₹ 49,500.00
+------------------------------------------------------------
+Total Assessed Out-of-Pocket Cost   : ₹ 0.00
+============================================================

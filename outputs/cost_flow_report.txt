@@ -1,0 +1,16 @@
+
+============================================================
+                     VISUAL COST FLOW
+============================================================
+Total Gross Treatment Cost:
+₹ 450,000.00
+   │
+   ├── [Primary Plan Allocation]
+   │   └── Approved Payment: ₹ 400,500.00
+   │
+   ├── [Secondary Plan Allocation]
+   │   └── Approved Payment: ₹ 49,500.00
+   │
+   └── [Patient Final Out-of-Pocket Balance]
+       └── Net Responsibility: ₹ 0.00
+============================================================

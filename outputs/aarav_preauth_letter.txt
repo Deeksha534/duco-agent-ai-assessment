@@ -1,0 +1,26 @@
+============================================================
+              PRIOR AUTHORIZATION COMPLIANCE REQUEST
+============================================================
+Date: June 17, 2026
+To: Medical Review Board & Prior Authorization Intake Dept.
+Primary Coverage Carrier  : Plan B (Insurer2)
+Secondary Coverage Carrier: Plan A (Insurer1)
+
+PATIENT CLINICAL PROFILE:
+-------------------------
+Patient Name : Aarav Sen
+Diagnosis    : Complete tear of ACL and medial meniscus tear
+Total Cost   : ₹ 450,000.00
+
+PROPOSED TREATMENT PLAN & CLINICAL CODES:
+-----------------------------------------
+- CPT Code: 29888 | Description: Arthroscopically aided ACL reconstruction | Cost: ₹ 350,000.00
+- CPT Code: 29881 | Description: Arthroscopy knee surgical with meniscectomy | Cost: ₹ 100,000.00
+
+JUSTIFICATION & COMPLIANCE STATEMENT:
+This request is submitted under dual Coordination of Benefits (COB) rules.
+All clinical findings conform to policy validation checks. Please review
+the attached structured intake data logs for expedited approval.
+
+Authorized Signature: DuCO-Agent Processing Engine
+============================================================

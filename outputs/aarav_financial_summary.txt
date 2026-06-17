@@ -1,0 +1,16 @@
+
+FINANCIAL SUMMARY REPORT
+
+Patient: Aarav Sen
+
+Total Cost:
+₹450000
+
+Primary Insurance Payment:
+₹400500.0
+
+Secondary Insurance Payment:
+₹31600.0
+
+Patient Responsibility:
+₹17900.0
