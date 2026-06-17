@@ -1,5 +1,9 @@
 # DuCO-Agent AI Assessment
 
+The final implementation for this assessment is available on the feature/agent-state branch, which is also configured as the repository's default branch.
+
+Earlier branches (e.g., feature/pdf-parser) are retained to demonstrate feature-based development workflow and commit history.
+
 ## Overview
 
 DuCO-Agent is an Agentic Multi-Modal AI System designed to automate insurance coordination, medical document analysis, Coordination of Benefits (COB) calculations, financial responsibility estimation, and pre-authorization letter generation.
