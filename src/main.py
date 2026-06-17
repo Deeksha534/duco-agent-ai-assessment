@@ -1,17 +1,22 @@
 import os
-from src.state import PatientAssessmentState
-from src.agents.intake_agent import run_multimodal_intake
-from src.agents.cob_agent import run_cob_agent
-from src.parsers.text_parser import read_text_file
-from src.agents.cost_flow_agent import generate_cost_flow
-from src.agents.briefing_agent import generate_patient_briefing
-from src.agents.report_agent import generate_financial_report
-from src.agents.letter_agent import generate_preauth_letter
+import sys
+
+# Dynamic path initialization to fix Python's import engine registry
+sys.path.append(os.path.dirname(os.path.abspath(__file__)))
+sys.path.append(os.path.join(os.path.dirname(os.path.abspath(__file__)), "agents"))
+
+from state import PatientAssessmentState
+from agents.intake_agent import run_multimodal_intake
+from agents.cob_agent import run_cob_agent
+from parsers.text_parser import read_text_file
+from agents.cost_flow_agent import generate_cost_flow
+from agents.briefing_agent import generate_patient_briefing
+from agents.report_agent import generate_financial_report
+from agents.letter_agent import generate_preauth_letter
 
 def main():
-    print("🚀 [DuCO-Agent System] Initializing Multi-Agent Coordination Loop...")
+    print("[INFO] [DuCO-Agent System] Initializing Multi-Agent Coordination Loop...")
 
-    # Define paths to mock files required by the assessment guidelines
     query_path = "data/user_query.txt"
     mock_assets = [
         "data/priya_pt_invoice.png",
@@ -19,53 +24,42 @@ def main():
         "data/surgeon_estimate.jpg"
     ]
 
-    # Ensure files exist safely before processing
     if not os.path.exists(query_path):
-        print(f"❌ Error: Required file {query_path} not found.")
+        print(f"[ERROR] Required input file {query_path} was not located.")
         return
 
-    # Initialize state with raw data input
     raw_query = read_text_file(query_path)
     state = PatientAssessmentState(user_query=raw_query, file_paths=mock_assets)
 
-    # 1. Execute Multi-Modal Intake Agent
+    # 1. Run Intake Extraction
     state = run_multimodal_intake(state, mock_assets)
 
-    # 2. Dynamic Execution & Safety Routing Check
+    # 2. Safety Flow Checks
     if not state.is_valid:
-        print(f"🛑 Execution halted by Orchestrator. Validation Failures: {state.validation_issues}")
+        print(f"[FATAL] Execution halted by Orchestrator. Validation Failures: {state.validation_issues}")
         return
 
-    # 3. Execute Coordination of Benefits Math Engine
+    # 3. Calculate COB Metrics
     state = run_cob_agent(state)
 
-    # 4. Generate Aesthetics and Usability Deliverables
+    # 4. Generate Output Deliverables
     os.makedirs("outputs", exist_ok=True)
     
     aarav_calc = state.cob_calculations["aarav"]
     priya_calc = state.cob_calculations["priya"]
 
-    # Generate Visual Cost Flow Report
-    cost_flow_content = generate_cost_flow(aarav_calc)
     with open("outputs/cost_flow_report.txt", "w", encoding="utf-8") as f:
-        f.write(cost_flow_content)
+        f.write(generate_cost_flow(aarav_calc))
 
-    # Generate Patient Narrative Audio Briefing
-    patient_briefing_content = generate_patient_briefing("Aarav Sen", aarav_calc)
     with open("outputs/patient_briefing.txt", "w", encoding="utf-8") as f:
-        f.write(patient_briefing_content)
+        f.write(generate_patient_briefing("Aarav Sen", aarav_calc))
 
-    # Generate Structured Corporate Financial Summaries
-    aarav_report = generate_financial_report("Aarav Sen", aarav_calc)
     with open("outputs/financial_summary.txt", "w", encoding="utf-8") as f:
-        f.write(aarav_report)
+        f.write(generate_financial_report("Aarav Sen", aarav_calc))
 
-    priya_report = generate_financial_report("Priya Sen", priya_calc)
     with open("outputs/priya_financial_summary.txt", "w", encoding="utf-8") as f:
-        f.write(priya_report)
+        f.write(generate_financial_report("Priya Sen", priya_calc))
 
-    # Generate Clinical Pre-Authorization Approval Request Letter
-    # Extracted metadata maps directly to surgical procedure layouts
     mock_cpt_1 = {"cpt": "29888", "description": "Arthroscopically aided ACL reconstruction"}
     mock_cpt_2 = {"cpt": "29881", "description": "Arthroscopy knee with meniscectomy"}
     
@@ -81,12 +75,7 @@ def main():
     with open("outputs/aarav_preauth_letter.txt", "w", encoding="utf-8") as f:
         f.write(preauth_letter)
 
-    print("\n🎉 [DuCO-Agent System] Run Complete! All assets stored successfully inside /outputs:")
-    print(" -> outputs/cost_flow_report.txt")
-    print(" -> outputs/patient_briefing.txt")
-    print(" -> outputs/financial_summary.txt")
-    print(" -> outputs/priya_financial_summary.txt")
-    print(" -> outputs/aarav_preauth_letter.txt")
+    print("\n[SUCCESS] [DuCO-Agent System] Run Complete! Artifacts securely stored inside /outputs.")
 
 if __name__ == "__main__":
     main()

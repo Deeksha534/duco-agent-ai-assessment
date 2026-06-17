@@ -8,14 +8,10 @@ class FinancialBreakdown(BaseModel):
     patient_responsibility: float = 0.0
 
 class PatientAssessmentState(BaseModel):
-    # Core inputs passed into the system loop
     user_query: str = ""
-    
-    # State data generated and extracted by the specialized agents
+    file_paths: List[str] = Field(default_factory=list)
     extracted_medical_data: Dict[str, Any] = Field(default_factory=dict)
     cob_calculations: Dict[str, FinancialBreakdown] = Field(default_factory=dict)
-    
-    # Routing and diagnostic tracking flags
     validation_issues: List[str] = Field(default_factory=list)
     is_valid: bool = True
     next_action: str = "intake"
