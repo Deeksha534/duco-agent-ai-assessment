@@ -63,7 +63,7 @@ financial_report = generate_financial_report(
 )
 
 print(financial_report)
-print("\nPRIYA FINANCIAL REPORT\n")
+
 
 
 print("\nCOB Calculation For Priya:")
@@ -78,6 +78,7 @@ priya_financial_report = generate_financial_report(
     "Priya",
     priya_cob
 )
+print("\nPRIYA FINANCIAL REPORT\n")
 print(priya_financial_report)
 
 
