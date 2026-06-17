@@ -18,6 +18,10 @@ from agents.mri_agent import (
 from agents.report_agent import generate_financial_report
 from agents.cost_flow_agent import generate_cost_flow
 from agents.briefing_agent import generate_patient_briefing
+from agents.orchestrator_agent import (
+    decide_next_steps,
+    validate_case
+)
 # Read user query
 user_query = read_text_file("data/user_query.txt")
 
@@ -26,7 +30,23 @@ info = intake(user_query)
 
 print("Extracted Information:")
 print(info)
+actions = decide_next_steps(info)
 
+print("\nORCHESTRATOR DECISIONS:")
+print(actions)
+validation = validate_case(info)
+
+print("\nVALIDATION RESULT:")
+print(validation)
+if not validation["valid"]:
+
+    print(
+        "\nWORKFLOW STOPPED - Validation Failed"
+    )
+
+    print(validation["issues"])
+
+    exit()
 # Aarav's insurance coordination
 aarav_plan = determine_primary_plan("aarav")
 
@@ -97,31 +117,44 @@ print("\nPRIYA FINANCIAL REPORT\n")
 print(priya_financial_report)
 
 
-print("\nMRI Analysis:")
+diagnosis = ""
 
-mri_report = read_text_file("data/mri_report.txt")
+if "mri_analysis" in actions:
 
-mri_findings = analyze_mri_report(mri_report)
+    print("\nMRI Analysis:")
 
-print(mri_findings)
-diagnosis = generate_diagnosis(mri_findings)
+    mri_report = read_text_file(
+        "data/mri_report.txt"
+    )
 
-print("\nGenerated Diagnosis:")
-print(diagnosis)
+    mri_findings = analyze_mri_report(
+        mri_report
+    )
 
-print("\nPRE-AUTHORIZATION LETTER\n")
+    print(mri_findings)
 
-aarav_letter = generate_preauth_letter(
-    "Aarav Sen",
-     diagnosis,
-    ACL_RECONSTRUCTION,
-    MENISCECTOMY,
-    450000,
-    "Plan B (Insurer2)",
-    "Plan A (Insurer1)"
-)
+    diagnosis = generate_diagnosis(
+        mri_findings
+    )
 
-print(aarav_letter)
+    print("\nGenerated Diagnosis:")
+    print(diagnosis)
+
+if "generate_preauth_letter" in actions:
+
+    print("\nPRE-AUTHORIZATION LETTER\n")
+
+    aarav_letter = generate_preauth_letter(
+        "Aarav Sen",
+        diagnosis,
+        ACL_RECONSTRUCTION,
+        MENISCECTOMY,
+        450000,
+        "Plan B (Insurer2)",
+        "Plan A (Insurer1)"
+    )
+
+    print(aarav_letter)
 
 with open(
     "outputs/aarav_preauth_letter.txt",
