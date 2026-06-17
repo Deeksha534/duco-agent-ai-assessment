@@ -2,23 +2,28 @@
 
 ## Overview
 
-DuCO-Agent is a multi-agent insurance coordination system designed to automate medical claim processing, Coordination of Benefits (COB), financial responsibility estimation, MRI report analysis, and pre-authorization letter generation.
+DuCO-Agent is an Agentic Multi-Modal AI System designed to automate insurance coordination, medical document analysis, Coordination of Benefits (COB) calculations, financial responsibility estimation, and pre-authorization letter generation.
 
-The system processes patient requests, analyzes medical information, determines insurance coverage order, calculates claim payments, and generates supporting documentation.
+The system processes multi-modal healthcare inputs including PDF reports, scanned images, and user queries. It utilizes a state-driven multi-agent workflow to extract clinical information, validate inputs, determine insurance coordination rules, calculate claim liabilities, and generate patient-facing outputs.
 
 ---
 
 ## Features
 
-### Intake Agent
+### Multi-Modal Intake Agent
 
-* Parses user requests
-* Identifies medical procedures
-* Detects pre-authorization requirements
+* Processes text, image, and PDF inputs
+* Extracts contextual information from:
+
+  * MRI reports
+  * Physical therapy invoices
+  * Surgeon estimation sheets
+* Maintains centralized agent state
+* Performs validation and routing
 
 ### MRI Analysis Agent
 
-* Analyzes MRI report text
+* Analyzes MRI report findings
 * Detects ACL tears
 * Detects meniscus tears
 * Generates diagnosis summaries
@@ -26,157 +31,227 @@ The system processes patient requests, analyzes medical information, determines 
 ### COB Agent
 
 * Determines primary and secondary insurance plans
-* Calculates Coordination of Benefits (COB)
+* Applies Coordination of Benefits (COB) logic
+* Calculates insurance liabilities
 
 ### Finance Agent
 
 * Calculates insurance payments
-* Applies deductibles and coverage percentages
+* Applies deductibles and coinsurance
 * Computes patient responsibility
 
 ### Letter Agent
 
-* Generates pre-authorization request letters
+* Generates professional pre-authorization letters
 * Includes CPT procedure codes
 * Includes diagnosis information
+* Generates insurer-ready documentation
 
 ### Report Agent
 
 * Generates financial summary reports
-* Summarizes insurance payments and patient costs
+* Generates patient-friendly cost breakdowns
+* Produces cost flow visualizations
+
+---
+
+## Multi-Modal Inputs
+
+The system processes the following inputs:
+
+### Text Input
+
+* user_query.txt
+
+### PDF Input
+
+* aarav_mri_report.pdf
+
+### Image Inputs
+
+* priya_pt_invoice.png
+* surgeon_estimate.jpg
 
 ---
 
 ## Project Structure
 
-```text
 duco-agent-ai-assessment
-│
+
 ├── data/
-│   ├── user_query.txt
-│   └── mri_report.txt
+
+│ ├── user_query.txt
+
+│ ├── aarav_mri_report.pdf
+
+│ ├── priya_pt_invoice.png
+
+│ └── surgeon_estimate.jpg
+
 │
+
 ├── outputs/
-├── aarav_preauth_letter.txt
-├── financial_summary.txt
-└── priya_financial_summary.txt
+
+│ ├── financial_summary.txt
+
+│ ├── priya_financial_summary.txt
+
+│ ├── aarav_preauth_letter.txt
+
+│ ├── priya_preauth_letter.txt
+
+│ ├── patient_briefing.txt
+
+│ └── cost_flow_report.txt
+
 │
+
 ├── src/
-│   │
-│   ├── agents/
-│   │   ├── intake_agent.py
-│   │   ├── cob_agent.py
-│   │   ├── finance_agent.py
-│   │   ├── letter_agent.py
-│   │   ├── mri_agent.py
-│   │   └── report_agent.py
-│   │
-│   ├── models/
-│   │   ├── insurance_plans.py
-│   │   └── procedure_codes.py
-│   │
-│   ├── parsers/
-│   │   ├── text_parser.py
-│   │   ├── pdf_parser.py
-│   │   └── image_parser.py
-│   │
-│   └── main.py
+
 │
+
+│ ├── agents/
+
+│ │ ├── intake_agent.py
+
+│ │ ├── cob_agent.py
+
+│ │ ├── finance_agent.py
+
+│ │ ├── letter_agent.py
+
+│ │ ├── mri_agent.py
+
+│ │ └── report_agent.py
+
+│ │
+
+│ ├── parsers/
+
+│ │ ├── text_parser.py
+
+│ │ ├── pdf_parser.py
+
+│ │ └── image_parser.py
+
+│ │
+
+│ ├── models/
+
+│ │ ├── insurance_plans.py
+
+│ │ └── procedure_codes.py
+
+│ │
+
+│ ├── state.py
+
+│ └── main.py
+
+│
+
 ├── requirements.txt
+
 └── README.md
-```
 
 ---
 
-## Architecture
+## Agentic Workflow
 
-```text
 User Query
-     |
-     v
-Text / PDF / Image Parsers
-     |
-     v
-Intake Agent
-     |
-     v
-MRI Agent
-     |
-     v
+
+↓
+
+Multi-Modal Intake Agent
+
+↓
+
+Validation Layer
+
+↓
+
+MRI Analysis Agent
+
+↓
+
 COB Agent
-     |
-     v
+
+↓
+
 Finance Agent
-     |
-     v
-Report Agent + Letter Agent
-     |
-     v
-Output Files
-```
+
+↓
+
+Report Agent
+
+↓
+
+Letter Agent
+
+↓
+
+Output Generation
 
 ---
 
-## Workflow
+## Agent State Management
 
-```text
-User Query
-      ↓
-Text / PDF / Image Parsing
-      ↓
-Intake Agent
-      ↓
-MRI Analysis
-      ↓
-Diagnosis Generation
-      ↓
-Insurance Coordination
-      ↓
-COB Calculation
-      ↓
-Financial Report Generation
-      ↓
-Pre-Authorization Letter Generation
-      ↓
-Output Files
-```
+The system maintains a centralized state object that stores:
 
+* Extracted medical information
+* Financial calculations
+* Validation results
+* Agent routing decisions
+* Generated artifacts
 
-## How to Run
-
-Install dependencies:
-
-```bash
-pip install -r requirements.txt
-```
-
-Run the application:
-
-```bash
-python src/main.py
-```
+This enables dynamic workflow transitions between agents and supports validation-driven execution.
 
 ---
 
 ## Generated Outputs
 
-The application generates:
+The system generates:
 
-* Pre-Authorization Letter
-* Financial Summary Report
-* Priya Financial Summary Report
+### Financial Reports
 
-Files are saved in:
+* financial_summary.txt
+* priya_financial_summary.txt
 
-```text
-outputs/
-```
+### Pre-Authorization Letters
+
+* aarav_preauth_letter.txt
+* priya_preauth_letter.txt
+
+### Patient Communication
+
+* patient_briefing.txt
+
+### Cost Visualization
+
+* cost_flow_report.txt
+
+All generated files are stored inside the outputs/ directory.
+
+---
+
+## Installation
+
+Install dependencies:
+
+pip install -r requirements.txt
+
+---
+
+## Run Application
+
+python -m src.main
 
 ---
 
 ## Technologies Used
 
 * Python
+* Pydantic
 * PyMuPDF
 * Pillow
 * pytesseract
@@ -187,12 +262,9 @@ outputs/
 
 ## Future Improvements
 
-* Real MRI PDF processing
-* OCR-based invoice extraction
-* Automated CPT code extraction
+* Real insurer API integration
+* LLM-powered clinical reasoning
+* Automated CPT inference from OCR text
+* Advanced claim optimization strategies
 * Interactive dashboard
-* Insurance API integration
-* Advanced medical reasoning
-
-```
-```
+* Voice-based patient briefing generation
