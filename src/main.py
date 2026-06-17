@@ -11,7 +11,11 @@ from models.procedure_codes import (
     ACL_RECONSTRUCTION,
     MENISCECTOMY
 )
-
+from agents.mri_agent import (
+    analyze_mri_report,
+    generate_diagnosis
+)
+from agents.report_agent import generate_financial_report
 # Read user query
 user_query = read_text_file("data/user_query.txt")
 
@@ -51,6 +55,15 @@ aarav_cob = calculate_cob_claim(
 )
 print(aarav_cob)
 
+print("\nFINANCIAL REPORT\n")
+
+financial_report = generate_financial_report(
+    "Aarav Sen",
+    aarav_cob
+)
+
+print(financial_report)
+
 print("\nCOB Calculation For Priya:")
 priya_cob = calculate_cob_claim(
     30000,
@@ -58,12 +71,23 @@ priya_cob = calculate_cob_claim(
     PLAN_B
 )
 print(priya_cob)
+print("\nMRI Analysis:")
+
+mri_report = read_text_file("data/mri_report.txt")
+
+mri_findings = analyze_mri_report(mri_report)
+
+print(mri_findings)
+diagnosis = generate_diagnosis(mri_findings)
+
+print("\nGenerated Diagnosis:")
+print(diagnosis)
 
 print("\nPRE-AUTHORIZATION LETTER\n")
 
 aarav_letter = generate_preauth_letter(
     "Aarav Sen",
-    "Complete ACL Tear with Medial Meniscus Tear",
+     diagnosis,
     ACL_RECONSTRUCTION,
     MENISCECTOMY,
     450000,
@@ -82,4 +106,15 @@ with open(
 
 print(
     "\nLetter saved to outputs/aarav_preauth_letter.txt"
+)
+
+with open(
+    "outputs/financial_summary.txt",
+    "w",
+    encoding="utf-8"
+) as file:
+    file.write(financial_report)
+
+print(
+    "Financial report saved to outputs/financial_summary.txt"
 )
