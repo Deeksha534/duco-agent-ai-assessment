@@ -63,6 +63,8 @@ financial_report = generate_financial_report(
 )
 
 print(financial_report)
+print("\nPRIYA FINANCIAL REPORT\n")
+
 
 print("\nCOB Calculation For Priya:")
 priya_cob = calculate_cob_claim(
@@ -71,6 +73,14 @@ priya_cob = calculate_cob_claim(
     PLAN_B
 )
 print(priya_cob)
+
+priya_financial_report = generate_financial_report(
+    "Priya",
+    priya_cob
+)
+print(priya_financial_report)
+
+
 print("\nMRI Analysis:")
 
 mri_report = read_text_file("data/mri_report.txt")
@@ -117,4 +127,14 @@ with open(
 
 print(
     "Financial report saved to outputs/financial_summary.txt"
+)
+with open(
+    "outputs/priya_financial_summary.txt",
+    "w",
+    encoding="utf-8"
+) as file:
+    file.write(priya_financial_report)
+
+print(
+    "Priya report saved to outputs/priya_financial_summary.txt"
 )
