@@ -57,8 +57,9 @@ duco-agent-ai-assessment
 │   └── mri_report.txt
 │
 ├── outputs/
-│   ├── aarav_preauth_letter.txt
-│   └── financial_summary.txt
+├── aarav_preauth_letter.txt
+├── financial_summary.txt
+└── priya_financial_summary.txt
 │
 ├── src/
 │   │
@@ -163,6 +164,7 @@ The application generates:
 
 * Pre-Authorization Letter
 * Financial Summary Report
+* Priya Financial Summary Report
 
 Files are saved in:
 
