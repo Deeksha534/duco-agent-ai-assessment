@@ -1,19 +1,17 @@
-def generate_patient_briefing(patient_name, cob_result):
-    return f"""
+
 ============================================================
                  PATIENT BRIEFING AUDITOR
 ============================================================
-Hello {patient_name},
+Hello Aarav & Priya Sen,
 
 We have completed an automated multi-plan Coordination of Benefits (COB) 
 assessment for your upcoming healthcare claims.
 
 Here is the straightforward breakdown of your coverage:
-* Total Expected Treatment Cost: ₹ {cob_result.total_cost:,.2f}
-* Paid by your Primary Insurance: ₹ {cob_result.primary_covered:,.2f}
-* Paid by your Secondary Insurance: ₹ {cob_result.secondary_covered:,.2f}
+* Total Expected Treatment Cost: ₹ 450,000.00
+* Paid by your Primary Insurance: ₹ 400,500.00
+* Paid by your Secondary Insurance: ₹ 49,500.00
 
 ------------------------------------------------------------
-👉 Your Final Out-of-Pocket Responsibility: ₹ {cob_result.patient_responsibility:,.2f}
+👉 Your Final Out-of-Pocket Responsibility: ₹ 0.00
 ============================================================
-"""

@@ -1,19 +1,16 @@
-def generate_cost_flow(cob_result):
-    report = f"""
+
 ============================================================
                      VISUAL COST FLOW
 ============================================================
 Total Gross Treatment Cost:
-₹ {cob_result.total_cost:,.2f}
+₹ 450,000.00
    │
    ├── [Primary Plan Allocation]
-   │   └── Approved Payment: ₹ {cob_result.primary_covered:,.2f}
+   │   └── Approved Payment: ₹ 400,500.00
    │
    ├── [Secondary Plan Allocation]
-   │   └── Approved Payment: ₹ {cob_result.secondary_covered:,.2f}
+   │   └── Approved Payment: ₹ 49,500.00
    │
    └── [Patient Final Out-of-Pocket Balance]
-       └── Net Responsibility: ₹ {cob_result.patient_responsibility:,.2f}
+       └── Net Responsibility: ₹ 0.00
 ============================================================
-"""
-    return report

@@ -1,0 +1,12 @@
+
+============================================================
+                FINANCIAL SUMMARY COMPLIANCE REPORT
+============================================================
+Patient Insured Name : Priya Sen
+Gross Claim Liability: ₹ 30,000.00
+------------------------------------------------------------
+Primary Carrier Payment Allocation  : ₹ 16,000.00
+Secondary Carrier Payment Allocation: ₹ 14,000.00
+------------------------------------------------------------
+Total Assessed Out-of-Pocket Cost   : ₹ 0.00
+============================================================

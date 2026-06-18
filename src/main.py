@@ -1,211 +1,102 @@
-from agents.intake_agent import intake
-from agents.cob_agent import (
-    determine_primary_plan,
-    calculate_cob_claim
-)
-from agents.finance_agent import calculate_claim
+import os
+import sys
+
+# Initialize system path routing environments
+sys.path.append(os.path.dirname(os.path.abspath(__file__)))
+sys.path.append(os.path.join(os.path.dirname(os.path.abspath(__file__)), "agents"))
+
+from state import PatientAssessmentState
+from agents.intake_agent import run_multimodal_intake
+from agents.cob_agent import run_cob_agent
 from parsers.text_parser import read_text_file
-from models.insurance_plans import PLAN_A, PLAN_B
-from agents.letter_agent import generate_preauth_letter
-from models.procedure_codes import (
-    ACL_RECONSTRUCTION,
-    MENISCECTOMY
-)
-from agents.mri_agent import (
-    analyze_mri_report,
-    generate_diagnosis
-)
-from agents.report_agent import generate_financial_report
 from agents.cost_flow_agent import generate_cost_flow
 from agents.briefing_agent import generate_patient_briefing
-from agents.orchestrator_agent import (
-    decide_next_steps,
-    validate_case
-)
-# Read user query
-user_query = read_text_file("data/user_query.txt")
+from agents.report_agent import generate_financial_report
+from agents.letter_agent import generate_preauth_letter
 
-# Extract information
-info = intake(user_query)
+def main():
+    print("[INFO] [DuCO-Agent System] Initializing Multi-Agent Coordination Loop...")
 
-print("Extracted Information:")
-print(info)
-actions = decide_next_steps(info)
+    # Ensure mock data files exist to avoid crashing
+    os.makedirs("data", exist_ok=True)
+    query_path = "data/user_query.txt"
+    if not os.path.exists(query_path):
+        with open(query_path, "w", encoding="utf-8") as f:
+            f.write("Hi DuCO-Agent, I need to get my knee operated on soon, and Priya has some physical therapy bills lying around. We have Insurer1 (Plan A) and Insurer2 (Plan B). Can you help us figure out which plan pays first for my surgery and her bills? How much will we actually have to pay out of our own pocket? Also, we need the pre-auth letters generated for both insurers so we don't end up with a claim rejection. Please help!")
 
-print("\nORCHESTRATOR DECISIONS:")
-print(actions)
-validation = validate_case(info)
+    mock_assets = [
+        "data/priya_pt_invoice.png",
+        "data/aarav_mri_report.pdf",
+        "data/surgeon_estimate.jpg"
+    ]
 
-print("\nVALIDATION RESULT:")
-print(validation)
-if not validation["valid"]:
+    raw_query = read_text_file(query_path)
+    state = PatientAssessmentState(user_query=raw_query, file_paths=mock_assets)
 
-    print(
-        "\nWORKFLOW STOPPED - Validation Failed"
-    )
+    # 1. Multi-Modal Intake Extraction Phase
+    state = run_multimodal_intake(state, mock_assets)
 
-    print(validation["issues"])
+    if not state.is_valid:
+        print(f"[FATAL] Orchestrator halted execution: {state.validation_issues}")
+        return
 
-    exit()
-# Aarav's insurance coordination
-aarav_plan = determine_primary_plan("aarav")
+    # 2. Compliant Coordination of Benefits (COB) Calculation Phase
+    state = run_cob_agent(state)
 
-print("\nAarav Insurance Coordination:")
-print(aarav_plan)
+    # 3. Output Generation & Artifact Export Phase
+    os.makedirs("outputs", exist_ok=True)
+    
+    aarav_calc = state.cob_calculations["aarav"]
+    priya_calc = state.cob_calculations["priya"]
+    
+    aarav_data = state.extracted_medical_data["aarav"]
+    priya_data = state.extracted_medical_data["priya"]
 
-# Priya's insurance coordination
-priya_plan = determine_primary_plan("priya")
+    # Export Visual Cost Outlay Flow
+    with open("outputs/cost_flow_report.txt", "w", encoding="utf-8") as f:
+        f.write(generate_cost_flow(aarav_calc))
 
-print("\nPriya Insurance Coordination:")
-print(priya_plan)
+    # Export Plain Narrative Consumer Briefing
+    with open("outputs/patient_briefing.txt", "w", encoding="utf-8") as f:
+        f.write(generate_patient_briefing("Aarav & Priya Sen", aarav_calc))
 
-# Single-plan calculations
-print("\nAarav Claim Calculation:")
-aarav_claim = calculate_claim(450000, PLAN_B)
-print(aarav_claim)
+    # Export Executive Financial Summaries
+    with open("outputs/financial_summary.txt", "w", encoding="utf-8") as f:
+        f.write(generate_financial_report("Aarav Sen", aarav_calc))
 
-print("\nPriya Claim Calculation:")
-priya_claim = calculate_claim(30000, PLAN_A)
-print(priya_claim)
+    with open("outputs/priya_financial_summary.txt", "w", encoding="utf-8") as f:
+        f.write(generate_financial_report("Priya Sen", priya_calc))
 
-# COB calculations
-print("\nCOB Calculation For Aarav:")
-aarav_cob = calculate_cob_claim(
-    450000,
-    PLAN_B,
-    PLAN_A
-)
-print(aarav_cob)
-
-print("\nCOST FLOW SUMMARY\n")
-
-cost_flow = generate_cost_flow(aarav_cob)
-
-print(cost_flow)
-print("\nPATIENT BRIEFING\n")
-
-patient_briefing = generate_patient_briefing(
-    "Aarav Sen",
-    aarav_cob
-)
-
-print(patient_briefing)
-print("\nFINANCIAL REPORT\n")
-
-financial_report = generate_financial_report(
-    "Aarav Sen",
-    aarav_cob
-)
-
-print(financial_report)
-
-
-
-print("\nCOB Calculation For Priya:")
-priya_cob = calculate_cob_claim(
-    30000,
-    PLAN_A,
-    PLAN_B
-)
-print(priya_cob)
-
-priya_financial_report = generate_financial_report(
-    "Priya",
-    priya_cob
-)
-print("\nPRIYA FINANCIAL REPORT\n")
-print(priya_financial_report)
-
-
-diagnosis = ""
-
-if "mri_analysis" in actions:
-
-    print("\nMRI Analysis:")
-
-    mri_report = read_text_file(
-        "data/mri_report.txt"
-    )
-
-    mri_findings = analyze_mri_report(
-        mri_report
-    )
-
-    print(mri_findings)
-
-    diagnosis = generate_diagnosis(
-        mri_findings
-    )
-
-    print("\nGenerated Diagnosis:")
-    print(diagnosis)
-
-if "generate_preauth_letter" in actions:
-
-    print("\nPRE-AUTHORIZATION LETTER\n")
-
+    # Export Pre-Authorization Letters for BOTH Insurers/Claims as requested
     aarav_letter = generate_preauth_letter(
-        "Aarav Sen",
-        diagnosis,
-        ACL_RECONSTRUCTION,
-        MENISCECTOMY,
-        450000,
-        "Plan B (Insurer2)",
-        "Plan A (Insurer1)"
+        patient_name=aarav_data["patient_name"],
+        diagnosis=aarav_data["condition"],
+        procedures=aarav_data["procedures"],
+        total_cost=aarav_calc.total_cost,
+        primary_plan="Plan B (Insurer2)",
+        secondary_plan="Plan A (Insurer1)"
     )
+    with open("outputs/aarav_preauth_letter.txt", "w", encoding="utf-8") as f:
+        f.write(aarav_letter)
 
-    print(aarav_letter)
+    priya_letter = generate_preauth_letter(
+        patient_name=priya_data["patient_name"],
+        diagnosis=priya_data["condition"],
+        procedures=priya_data["procedures"],
+        total_cost=priya_calc.total_cost,
+        primary_plan="Plan A (Insurer1)",
+        secondary_plan="Plan B (Insurer2)"
+    )
+    with open("outputs/priya_preauth_letter.txt", "w", encoding="utf-8") as f:
+        f.write(priya_letter)
 
-with open(
-    "outputs/aarav_preauth_letter.txt",
-    "w",
-    encoding="utf-8"
-) as file:
-    file.write(aarav_letter)
+    print("\n[SUCCESS] [DuCO-Agent System] Run Complete! All required assets stored successfully inside /outputs:")
+    print(" -> outputs/cost_flow_report.txt")
+    print(" -> outputs/patient_briefing.txt")
+    print(" -> outputs/financial_summary.txt")
+    print(" -> outputs/priya_financial_summary.txt")
+    print(" -> outputs/aarav_preauth_letter.txt")
+    print(" -> outputs/priya_preauth_letter.txt")
 
-print(
-    "\nLetter saved to outputs/aarav_preauth_letter.txt"
-)
-
-with open(
-    "outputs/financial_summary.txt",
-    "w",
-    encoding="utf-8"
-) as file:
-    file.write(financial_report)
-
-print(
-    "Financial report saved to outputs/financial_summary.txt"
-)
-with open(
-    "outputs/priya_financial_summary.txt",
-    "w",
-    encoding="utf-8"
-) as file:
-    file.write(priya_financial_report)
-
-print(
-    "Priya report saved to outputs/priya_financial_summary.txt"
-)
-
-with open(
-    "outputs/cost_flow_report.txt",
-    "w",
-    encoding="utf-8"
-) as file:
-    file.write(cost_flow)
-
-print(
-    "Cost flow report saved to outputs/cost_flow_report.txt"
-)
-
-with open(
-    "outputs/patient_briefing.txt",
-    "w",
-    encoding="utf-8"
-) as file:
-    file.write(patient_briefing)
-
-print(
-    "Patient briefing saved to outputs/patient_briefing.txt"
-)
+if __name__ == "__main__":
+    main()
