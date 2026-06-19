@@ -1,8 +1,8 @@
 # DuCO-Agent AI Assessment
 
-The final implementation for this assessment is available on the feature/agent-state branch, which is also configured as the repository's default branch.
+The final implementation for this assessment is available on the feature/pdf-parser branch, which is also configured as the repository's default branch.
 
-Earlier branches (e.g., feature/pdf-parser) are retained to demonstrate feature-based development workflow and commit history.
+other branches are retained to demonstrate feature-based development workflow and commit history.
 
 ## Overview
 
